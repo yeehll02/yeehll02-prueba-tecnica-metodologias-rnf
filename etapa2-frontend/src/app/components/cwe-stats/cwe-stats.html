@@ -1,0 +1,81 @@
+<div class="container-fluid py-4 px-4">
+  <h2 class="mb-4">Estadísticas CWE</h2>
+
+  <div class="row">
+    <div class="col-md-5">
+      <div class="card border-0 shadow-sm">
+        <div class="card-header bg-dark text-white fw-semibold">Ranking de CWEs</div>
+        <div class="px-2 pt-2">
+          <input class="form-control form-control-sm" type="text" placeholder="Buscar CWE..."
+                 [ngModel]="search()" (ngModelChange)="search.set($event)">
+        </div>
+        <div class="card-body p-2" style="max-height:70vh; overflow-y:auto">
+          @for (s of filteredStats(); track s.cweId) {
+            <div class="mb-2 px-1 py-1 rounded" style="cursor:pointer"
+                 [class.bg-light]="selectedCwe() === s.cweId"
+                 (click)="selectCwe(s.cweId)">
+              <div class="d-flex justify-content-between align-items-center">
+                <span [class.fw-bold]="selectedCwe() === s.cweId" class="text-primary small">{{ s.cweId }}</span>
+                <span class="badge bg-secondary">{{ s.cveCount }} CVEs</span>
+              </div>
+              <div class="progress mt-1" style="height:6px">
+                <div class="progress-bar bg-primary" [style.width]="barWidth(s.cveCount)"></div>
+              </div>
+            </div>
+          }
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-7">
+      @if (selectedCwe()) {
+        <div class="card border-0 shadow-sm">
+          <div class="card-header d-flex justify-content-between align-items-center">
+            <span><strong>CVEs con {{ selectedCwe() }}</strong> ({{ filteredCves().length }} de {{ cvesByCwe().length }})</span>
+          </div>
+          <div class="card-body pb-0 pt-2">
+            <div class="d-flex gap-1 flex-wrap mb-2">
+              @for (sv of severities; track sv.label) {
+                <button class="btn btn-sm"
+                  [class]="severityFilter() === sv.value
+                    ? (sv.value === 'CRITICAL' ? 'btn btn-danger'
+                    : sv.value === 'HIGH'      ? 'btn btn-warning'
+                    : sv.value === 'MEDIUM'    ? 'btn btn-info'
+                    : sv.value === 'LOW'       ? 'btn btn-success'
+                    : 'btn btn-dark')
+                    : 'btn btn-outline-secondary'"
+                  (click)="severityFilter.set(sv.value)">
+                  {{ sv.label }}
+                </button>
+              }
+            </div>
+          </div>
+          <div class="card-body p-0" style="max-height:65vh; overflow-y:auto">
+            <table class="table table-sm table-hover mb-0">
+              <thead class="table-dark sticky-top">
+                <tr>
+                  <th class="ps-3">CVE ID</th>
+                  <th>Vendor</th>
+                  <th>Producto</th>
+                  <th>Severidad</th>
+                </tr>
+              </thead>
+              <tbody>
+                @for (v of filteredCves(); track v.cveId) {
+                  <tr>
+                    <td class="ps-3"><a routerLink="/vulnerabilities/{{v.cveId}}">{{ v.cveId }}</a></td>
+                    <td>{{ v.cisaVendor ?? '-' }}</td>
+                    <td>{{ v.cisaProduct ?? '-' }}</td>
+                    <td><span [class]="severityClass(v.cvssV31BaseSeverity)">{{ v.cvssV31BaseSeverity ?? 'N/A' }}</span></td>
+                  </tr>
+                }
+              </tbody>
+            </table>
+          </div>
+        </div>
+      } @else {
+        <div class="text-muted mt-4 ps-2">← Selecciona un CWE para ver sus CVEs</div>
+      }
+    </div>
+  </div>
+</div>

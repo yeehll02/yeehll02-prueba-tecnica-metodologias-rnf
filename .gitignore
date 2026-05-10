@@ -1,0 +1,20 @@
+# Python
+venv/
+__pycache__/
+*.pyc
+*.pyo
+.env
+
+# Output generado por scripts (datos grandes, no código)
+output/
+
+# PDFs y documentos que no son código
+*.pdf
+
+# Archivos de datos intermedios/sensibles
+vulnerabilidades.json
+"vulnerabilidades copy.json"
+
+# OS
+.DS_Store
+Thumbs.db

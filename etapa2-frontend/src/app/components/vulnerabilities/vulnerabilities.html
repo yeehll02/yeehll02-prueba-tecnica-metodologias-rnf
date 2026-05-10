@@ -1,0 +1,110 @@
+<div class="container-fluid py-4 px-4">
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h2 class="mb-0">Vulnerabilidades CVE</h2>
+    <a routerLink="/vulnerabilities/new" class="btn btn-primary">+ Nueva</a>
+  </div>
+
+  <!-- Buscador -->
+  <div class="mb-3" style="max-width: 360px">
+    <div class="input-group input-group-sm">
+      <span class="input-group-text bg-white"><i>🔍</i></span>
+      <input type="text" class="form-control" placeholder="Buscar por CVE ID..."
+             [ngModel]="search()" (ngModelChange)="setSearch($event)">
+      @if (search()) {
+        <button class="btn btn-outline-secondary" type="button" (click)="setSearch('')">✕</button>
+      }
+    </div>
+  </div>
+
+  <!-- Filtros -->
+  <div class="d-flex flex-wrap gap-4 mb-4 align-items-center">
+    <div>
+      <span class="text-muted small me-2">Fuente:</span>
+      <div class="btn-group btn-group-sm">
+        @for (s of sources; track s.label) {
+          <button
+            [class]="source() === s.value ? 'btn btn-dark' : 'btn btn-outline-dark'"
+            (click)="setSource(s.value)">
+            {{ s.label }}
+          </button>
+        }
+      </div>
+    </div>
+
+    <div>
+      <span class="text-muted small me-2">Severidad:</span>
+      <div class="btn-group btn-group-sm">
+        @for (sv of severities; track sv.label) {
+          <button
+            [class]="severity() === sv.value
+              ? (sv.value === 'CRITICAL' ? 'btn btn-danger'
+              : sv.value === 'HIGH'     ? 'btn btn-warning'
+              : sv.value === 'MEDIUM'   ? 'btn btn-info'
+              : sv.value === 'LOW'      ? 'btn btn-success'
+              : 'btn btn-dark')
+              : 'btn btn-outline-secondary'"
+            (click)="setSeverity(sv.value)">
+            {{ sv.label }}
+          </button>
+        }
+      </div>
+    </div>
+
+    @if (page()) {
+      <span class="text-muted small ms-auto">{{ page()!.totalElements }} resultados</span>
+    }
+  </div>
+
+  @if (page()) {
+    <div class="table-responsive rounded shadow-sm">
+      <table class="table table-bordered table-hover align-middle mb-0">
+        <thead class="table-dark">
+          <tr>
+            <th class="ps-3">CVE ID</th>
+            <th>Fuentes</th>
+            <th>Vendor</th>
+            <th>Producto</th>
+            <th>Severidad v3.1</th>
+            <th>CVSS v3.1</th>
+            <th>Fecha CISA</th>
+            <th class="pe-3">Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (v of page()!.content; track v.cveId) {
+            <tr>
+              <td class="ps-3"><a routerLink="/vulnerabilities/{{v.cveId}}">{{ v.cveId }}</a></td>
+              <td>
+                @if (v.inCisa)   { <span class="badge bg-primary me-1">CISA</span> }
+                @if (v.inNuclei) { <span class="badge bg-dark">Nuclei</span> }
+              </td>
+              <td>{{ v.cisaVendor ?? '-' }}</td>
+              <td>{{ v.cisaProduct ?? '-' }}</td>
+              <td><span [class]="severityClass(v.cvssV31BaseSeverity)">{{ v.cvssV31BaseSeverity ?? 'N/A' }}</span></td>
+              <td>{{ v.cvssV31BaseScore ?? '-' }}</td>
+              <td>{{ v.cisaDateAdded ?? '-' }}</td>
+              <td class="pe-3">
+                <a routerLink="/vulnerabilities/{{v.cveId}}/edit" class="btn btn-sm btn-outline-secondary me-1">Editar</a>
+                <button (click)="delete(v.cveId)" class="btn btn-sm btn-outline-danger">Eliminar</button>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+
+    <div class="d-flex justify-content-between align-items-center mt-3 px-1">
+      <span class="text-muted small">Página {{ page()!.number + 1 }} de {{ page()!.totalPages }}</span>
+      <div>
+        <button class="btn btn-outline-secondary btn-sm me-1"
+          [disabled]="currentPage() === 0"
+          (click)="goTo(currentPage() - 1)">← Anterior</button>
+        <button class="btn btn-outline-secondary btn-sm"
+          [disabled]="currentPage() >= page()!.totalPages - 1"
+          (click)="goTo(currentPage() + 1)">Siguiente →</button>
+      </div>
+    </div>
+  } @else {
+    <p class="text-muted">Cargando...</p>
+  }
+</div>
