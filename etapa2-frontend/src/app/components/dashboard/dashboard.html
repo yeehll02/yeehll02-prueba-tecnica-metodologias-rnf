@@ -1,0 +1,205 @@
+<div class="container-fluid py-4 px-4">
+  <div class="mb-4">
+    <h2 class="mb-0 fw-bold">Dashboard</h2>
+    <span class="text-muted small">Resumen general del estado de vulnerabilidades</span>
+  </div>
+
+  @if (!stats()) {
+    <div class="text-center py-5"><div class="spinner-border text-primary"></div></div>
+  } @else {
+
+    <!-- Fila 1: KPIs de severidad -->
+    <div class="row g-3 mb-3">
+
+      <div class="col-md-3">
+        <div class="card border-0 shadow-sm h-100">
+          <div class="card-body text-center py-4">
+            <div class="display-5 fw-bold text-dark">{{ stats()!.totalCves | number }}</div>
+            <div class="text-muted small mt-1 text-uppercase fw-semibold">Total CVEs</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-3">
+        <div class="card border-0 shadow-sm h-100" style="border-left: 4px solid #dc3545 !important">
+          <div class="card-body text-center py-4">
+            <div class="display-5 fw-bold text-danger">{{ stats()!.critical | number }}</div>
+            <div class="text-muted small mt-1 text-uppercase fw-semibold">Critical</div>
+            <div class="text-muted small">{{ severityPercent(stats()!.critical) }} del total</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-3">
+        <div class="card border-0 shadow-sm h-100" style="border-left: 4px solid #ffc107 !important">
+          <div class="card-body text-center py-4">
+            <div class="display-5 fw-bold text-warning">{{ stats()!.high | number }}</div>
+            <div class="text-muted small mt-1 text-uppercase fw-semibold">High</div>
+            <div class="text-muted small">{{ severityPercent(stats()!.high) }} del total</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-3">
+        <div class="card border-0 shadow-sm h-100" style="border-left: 4px solid #0dcaf0 !important">
+          <div class="card-body text-center py-4">
+            <div class="display-5 fw-bold text-info">{{ stats()!.medium | number }}</div>
+            <div class="text-muted small mt-1 text-uppercase fw-semibold">Medium</div>
+            <div class="text-muted small">{{ severityPercent(stats()!.medium) }} del total</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Fila 2: Distribución por fuente + highlights -->
+    <div class="row g-3">
+
+      <!-- Distribución por fuente -->
+      <div class="col-md-5">
+        <div class="card border-0 shadow-sm h-100">
+          <div class="card-header bg-dark text-white fw-semibold">Distribución por fuente</div>
+          <div class="card-body d-flex flex-column justify-content-center gap-3 py-4">
+
+            <div>
+              <div class="d-flex justify-content-between small mb-1">
+                <span><span class="badge bg-primary me-1">CISA</span> solo</span>
+                <span class="fw-semibold">{{ stats()!.cisaOnly | number }} <span class="text-muted fw-normal">({{ sourcePercent(stats()!.cisaOnly) }})</span></span>
+              </div>
+              <div class="progress" style="height:10px">
+                <div class="progress-bar bg-primary" [style.width]="sourcePercent(stats()!.cisaOnly)"></div>
+              </div>
+            </div>
+
+            <div>
+              <div class="d-flex justify-content-between small mb-1">
+                <span><span class="badge bg-dark me-1">Nuclei</span> solo</span>
+                <span class="fw-semibold">{{ stats()!.nucleiOnly | number }} <span class="text-muted fw-normal">({{ sourcePercent(stats()!.nucleiOnly) }})</span></span>
+              </div>
+              <div class="progress" style="height:10px">
+                <div class="progress-bar bg-dark" [style.width]="sourcePercent(stats()!.nucleiOnly)"></div>
+              </div>
+            </div>
+
+            <div>
+              <div class="d-flex justify-content-between small mb-1">
+                <span><span class="badge bg-success me-1">Ambas</span> fuentes</span>
+                <span class="fw-semibold">{{ stats()!.both | number }} <span class="text-muted fw-normal">({{ sourcePercent(stats()!.both) }})</span></span>
+              </div>
+              <div class="progress" style="height:10px">
+                <div class="progress-bar bg-success" [style.width]="sourcePercent(stats()!.both)"></div>
+              </div>
+            </div>
+
+            <hr class="my-1">
+
+            <div>
+              <div class="d-flex justify-content-between small mb-1">
+                <span class="text-muted">Distribución de severidad</span>
+              </div>
+              <div class="progress" style="height:14px; border-radius:8px">
+                <div class="progress-bar bg-danger" [style.width]="severityPercent(stats()!.critical)"
+                     [title]="'CRITICAL: ' + stats()!.critical"></div>
+                <div class="progress-bar bg-warning" [style.width]="severityPercent(stats()!.high)"
+                     [title]="'HIGH: ' + stats()!.high"></div>
+                <div class="progress-bar bg-info" [style.width]="severityPercent(stats()!.medium)"
+                     [title]="'MEDIUM: ' + stats()!.medium"></div>
+                <div class="progress-bar bg-success" [style.width]="severityPercent(stats()!.low)"
+                     [title]="'LOW: ' + stats()!.low"></div>
+              </div>
+              <div class="d-flex gap-3 mt-2" style="font-size:0.72rem">
+                <span><span class="badge bg-danger">C</span> Critical</span>
+                <span><span class="badge bg-warning">H</span> High</span>
+                <span><span class="badge bg-info">M</span> Medium</span>
+                <span><span class="badge bg-success">L</span> Low</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Cards de highlights -->
+      <div class="col-md-7">
+        <div class="row g-3">
+
+          <div class="col-sm-6">
+            <div class="card border-0 shadow-sm h-100">
+              <div class="card-body">
+                <div class="text-muted small text-uppercase fw-semibold mb-2">Top CWE</div>
+                <div class="fw-bold fs-5 text-primary">{{ stats()!.topCwe }}</div>
+                <div class="text-muted small">{{ stats()!.topCweCount | number }} CVEs asociados</div>
+                <a routerLink="/cwe-stats" class="btn btn-outline-primary btn-sm mt-3">Ver CWE Stats →</a>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-sm-6">
+            <div class="card border-0 shadow-sm h-100">
+              <div class="card-body">
+                <div class="text-muted small text-uppercase fw-semibold mb-2">Top Plataforma</div>
+                <div class="fw-bold fs-6 text-warning" style="word-break:break-all">{{ stats()!.topCpe }}</div>
+                <div class="text-muted small">{{ stats()!.topCpeCount | number }} CVEs asociados</div>
+                <a routerLink="/cpe-ranking" class="btn btn-outline-warning btn-sm mt-3">Ver CPE Ranking →</a>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-sm-6">
+            <div class="card border-0 shadow-sm h-100">
+              <div class="card-body">
+                <div class="text-muted small text-uppercase fw-semibold mb-2">Top Vendor</div>
+                <div class="fw-bold fs-5">{{ stats()!.topVendor }}</div>
+                <div class="text-muted small">{{ stats()!.topVendorCount | number }} CVEs reportados</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-sm-6">
+            <div class="card border-0 shadow-sm h-100">
+              <div class="card-body">
+                <div class="text-muted small text-uppercase fw-semibold mb-2">Última CVE añadida</div>
+                <div class="fw-bold fs-5">{{ stats()!.lastAdded }}</div>
+                <div class="text-muted small">Fecha más reciente en CISA KEV</div>
+                <a routerLink="/vulnerabilities" class="btn btn-outline-secondary btn-sm mt-3">Ver listado →</a>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Tendencias mensuales -->
+    @if (timeline()) {
+      <div class="card border-0 shadow-sm mt-3">
+        <div class="card-header bg-dark text-white d-flex justify-content-between align-items-center">
+          <span class="fw-semibold">Tendencia mensual de CVEs añadidos a CISA KEV</span>
+          <span class="small text-secondary">
+            Promedio: <strong class="text-white">{{ timeline()!.promedio_mensual | number:'1.0-0' }}/mes</strong>
+            &nbsp;·&nbsp; Umbral de pico: <strong class="text-danger">{{ timeline()!.umbral_pico | number:'1.0-0' }}</strong>
+          </span>
+        </div>
+        <div class="card-body pt-3 pb-2">
+          <div class="d-flex align-items-end gap-px overflow-x-auto" style="height:80px">
+            @for (bar of bars(); track bar.month) {
+              <div [style.height]="bar.height"
+                   [style.background]="bar.isPeak ? '#dc3545' : '#6c9fcf'"
+                   [title]="bar.month + ': ' + bar.count + ' CVEs' + (bar.isPeak ? ' ⚠ PICO' : '')"
+                   style="flex:1; min-width:6px; border-radius:2px 2px 0 0; cursor:default">
+              </div>
+            }
+          </div>
+          <div class="d-flex justify-content-between mt-1" style="font-size:0.7rem; color:#aaa">
+            <span>{{ bars()[0]?.month }}</span>
+            <span>{{ bars()[bars().length - 1]?.month }}</span>
+          </div>
+          <div class="d-flex gap-3 mt-2" style="font-size:0.75rem">
+            <span><span style="display:inline-block;width:12px;height:12px;background:#dc3545;border-radius:2px"></span> Mes pico ({{ timeline()!.meses_pico.join(', ') }})</span>
+            <span><span style="display:inline-block;width:12px;height:12px;background:#6c9fcf;border-radius:2px"></span> Mes normal</span>
+          </div>
+        </div>
+      </div>
+    }
+
+  }
+</div>
