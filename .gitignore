@@ -13,7 +13,7 @@ output/
 
 # Archivos de datos intermedios/sensibles
 vulnerabilidades.json
-"vulnerabilidades copy.json"
+
 
 # OS
 .DS_Store
