@@ -84,9 +84,19 @@ ng serve --proxy-config proxy.conf.json
 
 ## Funcionalidades
 
-- **Dashboard** – KPIs de severidad, distribución por fuente y tendencia mensual
+- **Dashboard** – KPIs de severidad, distribución por fuente y tendencia mensual (meses pico de explotabilidad (media + σ))
+<img width="1882" height="970" alt="image" src="https://github.com/user-attachments/assets/a2d885f8-00cd-4388-9f59-17f9f958d978" />
+
 - **Vulnerabilidades** – listado paginado con filtros por fuente, severidad y búsqueda por CVE ID
+<img width="1889" height="961" alt="image" src="https://github.com/user-attachments/assets/e8bff120-5fb2-46ae-a113-1864319e6131" />
+
 - **CWE Stats** – ranking de debilidades con drill-down a CVEs asociados
+<img width="1899" height="957" alt="image" src="https://github.com/user-attachments/assets/62695dde-5912-4b9d-a228-e3b5fb32d637" />
+
 - **CPE Ranking** – plataformas más afectadas con drill-down y filtro de severidad
+<img width="1891" height="954" alt="image" src="https://github.com/user-attachments/assets/101a21e9-e1b1-43e9-bee0-149f77d65faa" />
+
 - **CRUD** – crear, editar y eliminar vulnerabilidades
-- **Tendencias** – detección estadística de meses pico de explotabilidad (media + σ)
+  <img width="1884" height="988" alt="image" src="https://github.com/user-attachments/assets/c1485703-04a6-4b56-9140-0aa96e77df2f" />
+
+
