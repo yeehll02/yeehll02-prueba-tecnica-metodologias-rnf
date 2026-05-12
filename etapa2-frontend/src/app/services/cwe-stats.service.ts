@@ -6,7 +6,7 @@ import { CweStats } from '../models/cwe-stats.model';
 @Injectable({ providedIn: 'root' })
 export class CweStatsService {
   private http = inject(HttpClient);
-  private url = 'http://localhost:8080/api/cwe-stats';
+  private url = '/api/cwe-stats';
 
   getAll(): Observable<CweStats[]> {
     return this.http.get<CweStats[]>(this.url);

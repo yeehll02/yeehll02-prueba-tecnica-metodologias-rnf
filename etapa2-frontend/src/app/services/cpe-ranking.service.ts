@@ -6,7 +6,7 @@ import { CpeRanking } from '../models/cpe-ranking.model';
 @Injectable({ providedIn: 'root' })
 export class CpeRankingService {
   private http = inject(HttpClient);
-  private url = 'http://localhost:8080/api/cpe-ranking';
+  private url = '/api/cpe-ranking';
 
   getAll(): Observable<CpeRanking[]> {
     return this.http.get<CpeRanking[]>(this.url);

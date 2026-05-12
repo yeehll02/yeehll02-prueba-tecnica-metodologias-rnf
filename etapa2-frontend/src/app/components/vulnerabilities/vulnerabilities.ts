@@ -25,6 +25,7 @@ export class VulnerabilitiesComponent {
     { label: 'Todos',  value: undefined },
     { label: 'CISA',   value: 'cisa' },
     { label: 'Nuclei', value: 'nuclei' },
+    { label: 'Ambas',  value: 'both' },
   ];
   readonly severities = [
     { label: 'Todas',    value: undefined },

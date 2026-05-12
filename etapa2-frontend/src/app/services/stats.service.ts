@@ -7,7 +7,7 @@ import { Timeline } from '../models/timeline.model';
 @Injectable({ providedIn: 'root' })
 export class StatsService {
   private http = inject(HttpClient);
-  private base = 'http://localhost:8080/api/stats';
+  private base = '/api/stats';
 
   get(): Observable<Stats> {
     return this.http.get<Stats>(this.base);
