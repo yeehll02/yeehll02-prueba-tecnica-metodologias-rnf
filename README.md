@@ -8,6 +8,7 @@ Gestión de vulnerabilidades CVE catalogadas en CISA y Nuclei.
 etapa1-python/     # Descarga, enriquecimiento y análisis de CVEs
 etapa2-backend/    # API REST con Spring Boot y PostgreSQL
 etapa2-frontend/   # Dashboard Angular
+etapa3-cobit/      # solución caso práctico
 ```
 
 
