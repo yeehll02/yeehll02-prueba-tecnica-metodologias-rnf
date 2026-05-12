@@ -9,7 +9,7 @@ __pycache__/
 output/
 
 # PDFs y documentos que no son código
-*.pdf
+
 
 # Archivos de datos intermedios/sensibles
 vulnerabilidades.json
